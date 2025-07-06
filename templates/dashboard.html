@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard | Plants Paradise{% endblock %}
+{% block content %}
+<h2 class="text-success mb-4">Dashboard</h2>
+<p class="lead">Welcome to your dashboard. Here you can see your activity and manage your plants paradise experience.</p>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card bg-success text-white text-center">
+            <div class="card-body">
+                <h3 class="card-title">{{ orders|length }}</h3>
+                <p class="card-text">Total Orders</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card bg-success bg-opacity-75 text-white text-center">
+            <div class="card-body">
+                <h3 class="card-title">{{ cart_items|length if cart_items else 0 }}</h3>
+                <p class="card-text">Items in Cart</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card bg-success bg-opacity-50 text-white text-center">
+            <div class="card-body">
+                <h3 class="card-title">${{ "%.2f"|format(total) if total else 0 }}</h3>
+                <p class="card-text">Cart Total</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card bg-success bg-opacity-25 text-success text-center">
+            <div class="card-body">
+                <h3 class="card-title">{{ current_user.created_at.strftime('%m') }}</h3>
+                <p class="card-text">Months Member</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-success">Quick Actions</h5>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('home') }}" class="btn btn-outline-success">Browse Plants</a>
+                    <a href="{{ url_for('cart') }}" class="btn btn-outline-success">View Cart</a>
+                    <a href="{{ url_for('profile') }}" class="btn btn-outline-success">View Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-success">Recent Activity</h5>
+                {% if orders %}
+                    {% for order in orders[:3] %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Order #{{ order.id }}</span>
+                        <span class="text-success">${{ "%.2f"|format(order.total_amount) }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No recent activity</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

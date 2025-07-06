@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+
+{% block title %}Home | Plants Paradise{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-3 fw-bold mb-4">Welcome to Plants Paradise</h1>
+        <p class="lead mb-4">Discover the perfect plants to transform your home into a green sanctuary. From air-purifying wonders to stunning statement pieces.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="/products" class="btn btn-light btn-lg px-4">Explore Plants</a>
+            {% if not current_user.is_authenticated %}
+                <a href="/signup" class="btn btn-outline-light btn-lg px-4">Join Us</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Featured Categories -->
+<div class="container mb-5">
+    <h2 class="text-center text-success mb-4">Plant Categories</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card category-card text-center h-100 floating">
+                <div class="card-body">
+                    <h3 class="text-success mb-3">🌿 Indoor Plants</h3>
+                    <p class="text-muted">Perfect for home and office spaces. Low maintenance and air-purifying.</p>
+                    <a href="/products?category=Indoor" class="btn btn-success">Browse Indoor</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card category-card text-center h-100 floating" style="animation-delay: 0.5s;">
+                <div class="card-body">
+                    <h3 class="text-success mb-3">🌱 Succulents</h3>
+                    <p class="text-muted">Drought-resistant and beautiful. Perfect for beginners and busy people.</p>
+                    <a href="/products?category=Succulent" class="btn btn-success">Browse Succulents</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card category-card text-center h-100 floating" style="animation-delay: 1s;">
+                <div class="card-body">
+                    <h3 class="text-success mb-3">🌳 Outdoor Plants</h3>
+                    <p class="text-muted">Transform your garden and outdoor spaces with stunning plants.</p>
+                    <a href="/products?category=Outdoor" class="btn btn-success">Browse Outdoor</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Plants -->
+<div class="container mb-5">
+    <h2 class="text-center text-success mb-4">Featured Plants</h2>
+    <div class="row" id="plant-list">
+        {% for plant in plants[:6] %}
+        <div class="col-md-4 mb-4 plant-card" data-category="{{ plant.category }}" data-price="{{ plant.price }}">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ plant.image_url }}" class="card-img-top" alt="{{ plant.name }}" style="height: 250px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title text-success">{{ plant.name }}</h5>
+                    <p class="card-text text-muted">{{ plant.description }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="h5 text-success mb-0">${{ "%.2f"|format(plant.price) }}</span>
+                        {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('add_to_cart', plant_id=plant.id) }}" class="btn btn-success">
+                                🌿 Add to Cart
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="btn btn-outline-success">Login to Buy</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="/products" class="btn btn-success btn-lg">View All Plants</a>
+    </div>
+</div>
+
+<!-- Testimonials Slider -->
+<div class="container mb-5">
+    <h2 class="text-center text-success mb-4">What Our Customers Say</h2>
+    <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="0" class="active bg-success"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="1" class="bg-success"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="2" class="bg-success"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="card bg-success bg-opacity-10 border-success">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-3">
+                            <span class="text-warning">★★★★★</span>
+                        </div>
+                        <p class="lead mb-3">"Plants Paradise transformed my home! The Monstera I bought is thriving and the care instructions were perfect. Highly recommend!"</p>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?auto=format&fit=crop&w=60&q=80" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Customer">
+                            <div class="text-start">
+                                <h6 class="mb-0 text-success">Sarah Johnson</h6>
+                                <small class="text-muted">Verified Customer</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="card bg-success bg-opacity-10 border-success">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-3">
+                            <span class="text-warning">★★★★★</span>
+                        </div>
+                        <p class="lead mb-3">"Amazing quality plants and excellent customer service. My succulents arrived in perfect condition and are growing beautifully!"</p>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=60&q=80" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Customer">
+                            <div class="text-start">
+                                <h6 class="mb-0 text-success">Mike Chen</h6>
+                                <small class="text-muted">Verified Customer</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="card bg-success bg-opacity-10 border-success">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-3">
+                            <span class="text-warning">★★★★★</span>
+                        </div>
+                        <p class="lead mb-3">"The best plant shop I've found online! Fast delivery, healthy plants, and the team is always helpful with care questions."</p>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=60&q=80" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Customer">
+                            <div class="text-start">
+                                <h6 class="mb-0 text-success">Emma Rodriguez</h6>
+                                <small class="text-muted">Verified Customer</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-success rounded"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-success rounded"></span>
+        </button>
+    </div>
+</div>
+
+<!-- Why Choose Us -->
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="text-success mb-4">Why Choose Plants Paradise?</h2>
+            <div class="d-flex align-items-center mb-3">
+                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                    🌱
+                </div>
+                <div>
+                    <h5 class="mb-1">Expert Care Guides</h5>
+                    <p class="text-muted mb-0">Detailed care instructions for every plant</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center mb-3">
+                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                    🚚
+                </div>
+                <div>
+                    <h5 class="mb-1">Safe Delivery</h5>
+                    <p class="text-muted mb-0">Carefully packaged and delivered to your door</p>
+                </div>
+            </div>
+            <div class="d-flex align-items-center mb-3">
+                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                    💚
+                </div>
+                <div>
+                    <h5 class="mb-1">Quality Guarantee</h5>
+                    <p class="text-muted mb-0">Healthy plants or your money back</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <img src="https://images.unsplash.com/photo-1509423350716-97f9360b4e09?auto=format&fit=crop&w=600&q=80" class="img-fluid rounded shadow" alt="Plant care">
+        </div>
+    </div>
+</div>
+
+<!-- Newsletter Signup -->
+<div class="container mb-5">
+    <div class="card bg-success bg-opacity-10 border-success">
+        <div class="card-body text-center py-5">
+            <h3 class="text-success mb-3">Stay Green with Us!</h3>
+            <p class="lead mb-4">Get plant care tips, new arrivals, and exclusive offers delivered to your inbox.</p>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Enter your email">
+                        <button class="btn btn-success">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Filter functionality
+document.getElementById('categoryFilter')?.addEventListener('change', filterPlants);
+document.getElementById('priceFilter')?.addEventListener('change', filterPlants);
+
+function filterPlants() {
+    const categoryFilter = document.getElementById('categoryFilter')?.value;
+    const priceFilter = document.getElementById('priceFilter')?.value;
+    const plantCards = document.querySelectorAll('.plant-card');
+    
+    plantCards.forEach(card => {
+        const category = card.dataset.category;
+        const price = parseFloat(card.dataset.price);
+        
+        let showCard = true;
+        
+        if (categoryFilter && category !== categoryFilter) {
+            showCard = false;
+        }
+        
+        if (priceFilter) {
+            const [min, max] = priceFilter.split('-').map(p => p === '+' ? Infinity : parseFloat(p));
+            if (price < min || (max !== Infinity && price > max)) {
+                showCard = false;
+            }
+        }
+        
+        card.style.display = showCard ? 'block' : 'none';
+    });
+}
+
+// Auto-play testimonial carousel
+document.addEventListener('DOMContentLoaded', function() {
+    const carousel = new bootstrap.Carousel(document.getElementById('testimonialCarousel'), {
+        interval: 5000,
+        wrap: true
+    });
+});
+</script>
+{% endblock %} 

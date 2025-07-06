@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Plants - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">
+                            <i class="fas fa-users me-2"></i>
+                            Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_orders') }}">
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_plants') }}">
+                            <i class="fas fa-seedling me-2"></i>
+                            Plants
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">
+                            <i class="fas fa-home me-2"></i>
+                            Back to Site
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Manage Plants</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                        <span class="text-muted">Total Plants: {{ plants|length }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plants Grid -->
+            <div class="row">
+                {% for plant in plants %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card shadow h-100">
+                        <img src="{{ plant.image_url }}" class="card-img-top" alt="{{ plant.name }}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ plant.name }}</h5>
+                            <p class="card-text text-muted">{{ plant.description[:100] }}{% if plant.description|length > 100 %}...{% endif %}</p>
+                            
+                            <div class="plant-details">
+                                <div class="detail-row">
+                                    <span class="label">Category:</span>
+                                    <span class="badge bg-info">{{ plant.category }}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Price:</span>
+                                    <span class="price">${{ "%.2f"|format(plant.price) }}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Stock:</span>
+                                    <span class="stock {% if plant.stock < 5 %}text-danger{% elif plant.stock < 10 %}text-warning{% else %}text-success{% endif %}">
+                                        {{ plant.stock }} units
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">ID: {{ plant.id }}</small>
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-sm btn-outline-primary" disabled>
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" disabled>
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if not plants %}
+            <div class="text-center py-5">
+                <i class="fas fa-seedling fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No plants found.</p>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</div>
+
+<style>
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.sidebar .nav-link {
+    font-weight: 500;
+    color: #333;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin: 0.25rem 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #e9ecef;
+    color: #2d5a27;
+}
+
+.sidebar .nav-link.active {
+    background-color: #2d5a27;
+    color: white;
+}
+
+.card {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2) !important;
+}
+
+.card-img-top {
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.plant-details {
+    margin-top: 1rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #f8f9fc;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-weight: 600;
+    color: #5a5c69;
+}
+
+.price {
+    font-weight: 700;
+    color: #2d5a27;
+    font-size: 1.1em;
+}
+
+.stock {
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.card-footer {
+    border-top: 1px solid #e3e6f0;
+    background-color: #f8f9fc;
+    border-radius: 0 0 0.75rem 0.75rem;
+}
+
+.btn-group .btn {
+    margin-right: 0.25rem;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+</style>
+{% endblock %} 

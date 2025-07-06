@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Plants Paradise{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-success bg-opacity-10">
+    <!-- Custom cursor elements -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-success bg-opacity-75 shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white fw-bold" href="/">Plants Paradise</a>
+            <div>
+                <a class="btn btn-outline-light me-2" href="/about">About</a>
+                <a class="btn btn-outline-light me-2" href="/products">Products</a>
+                {% if current_user.is_authenticated %}
+                    <a class="btn btn-outline-light me-2" href="/cart">Cart</a>
+                    <a class="btn btn-outline-light me-2" href="/dashboard">Dashboard</a>
+                    <a class="btn btn-outline-light me-2" href="/profile">Profile</a>
+                    {% if current_user.is_admin %}
+                        <a class="btn btn-outline-warning me-2" href="/admin">Admin</a>
+                    {% endif %}
+                    <a class="btn btn-light text-success" href="/logout">Logout</a>
+                {% else %}
+                    <a class="btn btn-light text-success" href="/login">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="container mt-3">
+                {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <div class="container py-5">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Plants Paradise</h5>
+                    <p>Bringing nature to your home, one plant at a time. Discover the joy of gardening with our curated collection of beautiful plants.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/products">Products</a></li>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/cart">Cart</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Us</h5>
+                    <p>Email: info@plantsparadise.com<br>
+                    Phone: (555) 123-4567<br>
+                    Address: 123 Garden Street, Green City</p>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p>&copy; 2024 Plants Paradise. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom cursor JavaScript -->
+    <script>
+        // Custom cursor functionality
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Create trail effect
+            if (Math.random() > 0.8) {
+                createTrail(e.clientX, e.clientY);
+            }
+        });
+
+        function createTrail(x, y) {
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            trail.style.left = x + 'px';
+            trail.style.top = y + 'px';
+            document.body.appendChild(trail);
+            
+            setTimeout(() => {
+                trail.remove();
+            }, 1000);
+        }
+
+        function animateCursor() {
+            // Smooth cursor movement
+            cursorX += (mouseX - cursorX) * 0.1;
+            cursorY += (mouseY - cursorY) * 0.1;
+            
+            followerX += (mouseX - followerX) * 0.05;
+            followerY += (mouseY - followerY) * 0.05;
+            
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            
+            cursorFollower.style.left = followerX + 'px';
+            cursorFollower.style.top = followerY + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Hover effects
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('.card')) {
+                cursor.classList.add('hover');
+                cursorFollower.classList.add('hover');
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('.card')) {
+                cursor.classList.remove('hover');
+                cursorFollower.classList.remove('hover');
+            }
+        });
+
+        // Click effect
+        document.addEventListener('click', (e) => {
+            createParticle(e.clientX, e.clientY);
+        });
+
+        function createParticle(x, y) {
+            for (let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.animationDelay = i * 0.1 + 's';
+                document.body.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 2000);
+            }
+        }
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html> 

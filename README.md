@@ -1,3 +1,4 @@
+ HEAD
 # Plants Paradise 🌿
 
 A beautiful, animated e-commerce website for home plants built with Flask, Bootstrap, and SQLite. Features a soothing green theme with smooth animations and cursor effects.
@@ -134,3 +135,7 @@ This project is open source and available under the MIT License.
 ---
 
 **Plants Paradise** - Bringing nature to your home, one plant at a time! 🌱 
+=======
+# Plant_Paradise-ecomm
+Ecommerce app  using python &amp; flask
+>>>>>>> 390d549ea36c54814fb073febd327ce3ade77ab7
